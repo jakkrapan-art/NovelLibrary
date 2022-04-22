@@ -1,0 +1,99 @@
+@set('title',title)
+@include('layouts/master')
+
+@section('body')
+<div class="row">
+    <div class="ui centered divided grid">
+        <div class="ui thirteen wide column grid">
+            <div class="ui segment">
+                <div class="ui grid">
+                    <div class="row">
+                        <div class="ui column grid">
+                            <h1>{{book.bookName}}</h1>
+                        </div>
+                    </div>
+                    <div class="ui divider"></div>
+                    <div class="row">
+                        <div class="ui column grid">
+                            <h2><i>{{page.pageHeader}}</i></h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="ui thirteen wide column grid">
+                            <p class="content" style="white-space:pre-line;">
+                                {{page.content}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="four column row">
+                        @if(previousPage)
+                        <div class="left floated column">
+                            <a href="{{route('page.show', {bookId: book.bookId,pageNo: previousPage.pageNo})}}" class="fluid ui button">
+                                <i class="chevron left icon"></i> Previous page
+                            </a>
+                        </div>
+                        @elseif(nextPage)
+                        <div class="right floated column" style="text-align: right">
+                            <a href="{{route('page.show', {bookId: book.bookId,pageNo: nextPage.pageNo})}}" class="fluid ui button">
+                                Next page <i class="chevron right icon"></i>
+                            </a>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="ui centered grid">
+        <div class="ui ten wide column grid">
+            <div class="row">
+                <a class="fluid ui button" href="{{route('books.detail', {bookId: book.bookId})}}">
+                    <i class="chevron left icon"></i>Back to book page
+                </a>
+            </div>
+            @if(!book.publishDate)
+            <div class="ui equal width grid">
+                <div class="column">
+                    <a href="{{route('pages.edit', {bookId: book.bookId,pageId: page.pageId})}}"><div class="fluid ui yellow button"> Edit</div></a>
+                </div>
+                <div class="column">
+                    <div class="fluid ui red button" onclick="deletePage();">Delete</div>
+                </div>
+            </div>
+            @endif
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="ui basic modal">
+        <div class="ui icon header">
+        Delete Page.
+        </div>
+        <div class="content">
+        <p>Are you sure to delete this page?</p>
+        </div>
+        <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            No
+        </div>
+        <a>
+        <a href="{{route('pages.delete', {pageId: page.pageId,bookId: book.bookId})}}">
+            <div class="ui green ok button">
+                <i class="checkmark icon"></i>
+                Yes
+            </div>
+        </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function deletePage(){
+        $('.ui.basic.modal')
+        .modal('show')
+    };
+</script>
+@endsection

@@ -1,0 +1,131 @@
+@set('title',book.bookName)
+@include('layouts/master')
+@section('body')
+
+<div class="row">
+    <div class="ui centered divided grid">
+        <div class="ui thirteen wide column grid">
+            <div class="ui segment">
+                <div class="ui grid">
+                    <div class="row">
+                        <div class="ui column grid">
+                            <h1>{{book.bookName}}</h1>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="ui column grid">
+                            <h3>Category: {{book.category}}</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="ui column grid">
+                            <i>Author: {{author}}</i>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column" style="white-space:pre-line;">
+                            <h5>Synopsis: </h5>
+                            @if(book.synopsis)
+                            {{book.synopsis}}
+                            @else
+                            -
+                            @endif
+                        </div>
+                    </div>
+                    @if(book.publishDate)
+                    <div class="row">
+                        <div class="column">
+                            <h5>Published on {{book.publishDate.toLocaleDateString()}}</h5>
+                        </div>
+                    </div>
+                    @endif
+                    <div class="row">
+                        <div class="column">
+                            <div class="fluid ui grey button dropdown">
+                                <div class="default text">{{book.pages.length}} Pages (Click to open)</div>
+                                <div class="menu">
+                                    @each(page in book.pages)
+                                    <a class="item" href="{{route('page.show',{bookId: book.bookId,pageNo: page.pageNo})}}">
+                                        <div class="content">
+                                            <div class="header">{{page.pageHeader}}</div>
+                                            <div class="description"><i>Page number: {{page.pageNo}}</i></div>
+                                        </div>
+                                    </a>
+                                    <div class="ui divider"></div>
+                                    @endeach
+                                    @if(!book.publishDate)
+                                    <a class="item" href="{{route('pages.create',{bookId: book.bookId,pageNo: book.pages.length+1})}}">
+                                        <div class="content">
+                                            <i class="plus icon"></i> Add page
+                                        </div>
+                                    </a>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="ui centered grid">
+        <div class="ui ten wide column grid">
+            @if(currentUser)
+                @if(book.publishDate && currentUser.username === author)
+                <div class="fluid ui red button" onclick="deleteBook();">Delete Book</div>
+                @elseif(currentUser.username === author)
+                <div class="ui equal width grid">
+                    <div class="column">
+                        <a href="{{route('books.edit', {bookId: book.bookId})}}"><div class="fluid ui yellow button"> Edit</div></a>
+                    </div>
+                    <div class="column">
+                        <a href="{{route('books.publish', {bookId: book.bookId})}}">
+                            <div class="fluid ui green button">
+                                Publish
+                            </div>
+                        </a>
+                    </div>
+                    <div class="column">
+                        <div class="fluid ui red button" onclick="deleteBook();">Delete</div>
+                    </div>
+                </div>
+                @endif
+            @endif
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="ui basic modal">
+        <div class="ui icon header">
+        Delete book.
+        </div>
+        <div class="content">
+        <p>Are you sure to delete [{{book.bookName}}]</p>
+        </div>
+        <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            No
+        </div>
+        <a href="{{route('books.delete', {bookId: book.bookId})}}">
+            <div class="ui green ok button">
+                <i class="checkmark icon"></i>
+                Yes
+            </div>
+        </a>
+        </div>
+    </div>
+</div>
+<script>
+    function deleteBook(){
+        $('.ui.basic.modal')
+        .modal('show')
+    };
+</script>
+<script>
+    $('.ui.dropdown')
+    .dropdown();
+</script>
+@endsection
