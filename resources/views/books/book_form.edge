@@ -1,0 +1,113 @@
+@set('title',title)
+@include('layouts/master')
+@section('body')
+@if(pageName === 'createBook')
+<form action="{{route('books.store')}}" method="POST">
+@elseif(pageName === 'editBook')
+<form action="{{route('books.update', {bookId: book.bookId})}}" method="POST">
+@endif
+    {{ csrfField() }}
+    <div class="ui divided centered grid">
+        <div class="ui thirteen wide column grid">
+            @if(book)
+            <input type="hidden" name="bookId" value="{{book.bookId}}">
+            @endif
+            <div class="ui segment">
+                <div class="row">
+                    <div class="ui column centered grid">
+                        @if(book)
+                        <h1>Edit Book</h1>
+                        @else
+                        <h1>Create New Book</h1>
+                        @endif
+                    </div>
+                </div>
+                <div class="ui divider"></div>
+                <div class="row">
+                    <div class="content">
+                        <div class="header"><i><h3>Book name: *</h3></i></div>
+                        <div class="description">
+                            <div class="ui fluid input">
+                                @if(tempBook)
+                                <input type="text" name="bookName" value="{{tempBook.bookName}}" placeholder="Your book name">
+                                @elseif(book)
+                                <input type="text" name="bookName" value="{{book.bookName}}" placeholder="Your book name">
+                                @else
+                                <input type="text" name="bookName" value="" placeholder="Your book name">
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <br>
+                    <div class="header"><i><h3>Category: *</h3></i></div>
+                    <div class="ui selection dropdown">
+                        @if(tempBook)
+                        <input type="hidden" name="category" value="{{tempBook.category}}">
+                        @elseif(book)
+                        <input type="hidden" name="category" value="{{book.category}}">
+                        @else
+                        <input type="hidden" name="category" value="">
+                        @endif
+                        <i class="dropdown icon"></i>
+                        <div class="default text">Category</div>
+                        <div class="menu">
+                            <div class="item" data-value="Mystery">Mystery</div>
+                            <div class="item" data-value="Thriller">Thriller</div>
+                            <div class="item" data-value="Horror">Horror</div>
+                            <div class="item" data-value="Historical">Historical</div>
+                            <div class="item" data-value="Romance">Romance</div>
+                            <div class="item" data-value="Science fiction">Science fiction</div>
+                            <div class="item" data-value="Fantasy">Fantasy</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <br>
+                    <div class="content">
+                        <div class="header">
+                            <i><h3>Synopsis: </h3></i>
+                        </div>
+                        <div class="description">
+                            <textarea style="min-height: 200px;height: 200px; width: 100%; resize: vertical" name="synopsis">{{tempBook ? tempBook.synopsis : !book ? '': book.synopsis ? book.synopsis : ''}}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <br>
+                    @if(book || tempBook)
+                    <div class="fluid ui buttons">
+                        <a class="ui grey button" href="{{route('books.detail',{bookId: book.bookId})}}">Cancel</a>
+                        <div class="or"></div>
+                        <input class="ui green submit button" type="submit" value="Save Changes">
+                    </div>
+                    @else
+                    <input class="fluid ui submit button" type="submit" value="Create">
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<br>
+@if(flashMessages.has('errors') || flashMessages.has('error'))
+<div class="ui centered">
+    <div class="ui negative message">
+        <h2>Something went wrong.</h2>
+        @each(error in flashMessages.get('errors'))
+            <p>- {{error}}</p>
+        @endeach
+        @if(flashMessages.has('error'))
+            <p>- {{flashMessages.get('error')}}</p>
+        @endif
+        <p>Please try again.</p>
+    </div>
+</div>
+@endif
+
+<script>
+    $('.ui.dropdown')
+    .dropdown();
+</script>
+@endsection

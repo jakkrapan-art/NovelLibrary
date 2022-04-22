@@ -1,0 +1,48 @@
+@set('title', 'Login.')
+@include('layouts/master')
+
+@section('body')
+<h1>Login</h1>
+<div class="ui placeholder segment">
+    <form action="{{route('users.login')}}" method="POST">
+    {{ csrfField() }}
+    <div class="ui form">
+        <div class="field">
+            <label>Username</label>
+            <div class="ui left icon input">
+                <input type="text" name="username" placeholder="Username">
+                <i class="user icon"></i>
+            </div>
+        </div>
+        <div class="field">
+            <label>Password</label>
+            <div class="ui left icon input">
+                <input type="password" name="password" placeholder="Password">
+                <i class="lock icon"></i>
+            </div>
+        </div>
+        <input class="ui blue submit button" type="submit" value="Login"/>
+    </form>
+    <div class="ui horizontal divider">
+        Or
+    </div>
+    <a href="{{route('register')}}">
+        <div class="big green ui button">Register</div>
+    </a>
+</div>
+<br>
+@if(flashMessages.has('errors') || flashMessages.has('error'))
+<div class="ui centered">
+    <div class="ui negative message">
+        <h2>Something went wrong.</h2>
+        @if(flashMessages.has('error'))
+            <p>- {{flashMessages.get('error')}}</p>
+        @endif
+        @each(error in flashMessages.get('errors'))
+            <p>- {{error}}</p>
+        @endeach
+        <p>Please try again.</p>
+    </div>
+</div>
+@endif
+@endsection

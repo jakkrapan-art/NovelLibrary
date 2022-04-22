@@ -1,0 +1,21 @@
+<div class="ui blue large menu inverted">
+    <div class="header item">Library</div>
+    <a class="item" href="{{route('books.showAll')}}">All books</a>
+    @if(currentUser)
+    <a class="item" href="{{route('books.showMine')}}">My books</a>
+    @endif
+    <div class="right menu">
+        @if(currentUser)
+        <div class="item">
+            User: {{currentUser.username}}
+        </div>
+        <a class="item" href="{{route('users.logout')}}">
+            Logout
+        </a>
+        @else
+        <a class="item" href="{{route('login')}}">
+            Login
+        </a>
+        @endif
+    </div>
+</div>

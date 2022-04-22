@@ -1,0 +1,72 @@
+@set('title', title)
+@include('layouts/master')
+
+@section('body')
+@if(pageName === 'createPage')
+<form action="{{route('pages.store', {bookId: bookId, pageNo: pageNo})}}" method="POST">
+@elseif(pageName === 'editPage')
+<form action="{{route('pages.update', {bookId: bookId,pageId: page.pageId})}}" method="POST">
+@endif
+    {{ csrfField() }}
+    <div class="row">
+        <div class="ui divided centered grid">
+            <div class="ui thirteen wide column grid">
+                <div class="ui segment">
+                <div class="row">
+                    <div class="ui column centered grid">
+                        <h1>{{header}} page {{pageNo}} of [{{bookName}}]</h1>
+                    </div>
+                </div>
+                <div class="ui divider"></div>
+                <div class="row">
+                    <div class="content">
+                        <div class="header"><i><h3>Page Header</h3></i></div>
+                    </div>
+                    <div class="description">
+                        <div class="fluid ui input">
+                            <input type="text" name="pageHeader" value="{{tempPage ? tempPage.pageHeader : page ? page.pageHeader:''}}" placeholder="Page header">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <br>
+                    <div class="content">
+                        <div class="header"><i><h3>Content</h3></i></div>
+                        <div class="description">
+                            <textarea style="min-height: 350px;height: 350px; width: 100%; resize: vertical" name="content">{{tempPage ? tempPage.content : !page ? '': page.content ? page.content : ''}}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <br>
+                    @if(page || tempPage)
+                    <div class="fluid ui buttons">
+                        <a class="ui grey button" href="{{route('page.show',{pageNo: page.pageNo,bookId: bookId})}}">Cancel</a>
+                        <div class="or"></div>
+                        <input class="ui green submit button" type="submit" value="Save Changes">
+                    </div>
+                    @else
+                    <input class="fluid ui submit button" type="submit" value="Create">
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+<br>
+@if(flashMessages.has('errors') || flashMessages.has('error'))
+<div class="ui centered">
+    <div class="ui negative message">
+        <h2>Something went wrong.</h2>
+        @each(error in flashMessages.get('errors'))
+        <p>- {{error}}</p>
+        @endeach
+        @if(flashMessages.has('error'))
+        <p>- {{flashMessages.get('error')}}</p>
+        @endif
+        <p>Please try again.</p>
+    </div>
+</div>
+@endif
+@endsection
